@@ -20,5 +20,15 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\Security\CustomUserProvider:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Security\CustomRoleHierarchy:
+        arguments:
+            $roleHierarchy: '%security.role_hierarchy%'
+            $entityManager: '@doctrine.orm.entity_manager'
+
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
