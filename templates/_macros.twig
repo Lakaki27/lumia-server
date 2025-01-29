@@ -1,0 +1,7 @@
+{% macro title(input) %}
+    {% if input is empty %}
+        Lumia
+    {% else %}
+        Lumia — {{ input }}
+    {% endif %}
+{% endmacro %}

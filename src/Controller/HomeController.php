@@ -24,14 +24,4 @@ final class HomeController extends AbstractController
             'controller_name' => 'HomeController',
         ]);
     }
-
-    #[Route('/test', name: 'index_test')]
-    public function indexTest(EntityManagerInterface $em): Response
-    {
-        dd($this->userRepository->findOneByEmail("test@test.test"));
-
-        return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
-        ]);
-    }
 }
