@@ -24,6 +24,9 @@ class Product
     #[ORM\Column(length: 10)]
     private ?int $amount = null;
 
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductLog::class)]
+    private $productLogs;
+
     #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeImmutable $created_at = null;
 
@@ -91,6 +94,18 @@ class Product
     public function setUpdatedAt(\DateTimeImmutable $updated_at): static
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getProductLogs()
+    {
+        return $this->productLogs;
+    }
+
+    public function setProductLogs($productLogs): self
+    {
+        $this->productLogs = $productLogs;
 
         return $this;
     }

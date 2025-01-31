@@ -20,22 +20,22 @@ final class EmbeddedClientsController extends AbstractController
     }
 
     #[Route("", name: 'embedded_clients_all')]
-    public function allEmbeddedClient(): Response
+    public function allEmbeddedClients(): Response
     {
-        //get all embedded clients
+        $clients = $this->embeddedClientsRepository->findAll();
 
         return $this->render('embedded_clients/embedded_clients.html.twig', [
-            'TODO' => 'Display all embedded clients',
+            "clients" => $clients,
         ]);
     }
 
     #[Route("/{id}", name: 'embedded_client_details')]
-    public function usersEmbeddedClient(int $id): Response
+    public function embeddedClientDetails(int $id): Response
     {
-        //get embedded client from id
+        $client = $this->embeddedClientsRepository->findOneById($id);
 
         return $this->render('embedded_clients/details.html.twig', [
-            'TODO' => "Display embedded clients for id $id",
+            "client" => $client,
         ]);
     }
 
@@ -44,8 +44,6 @@ final class EmbeddedClientsController extends AbstractController
     {
         //add embedded client (ADD FORM TOO)
 
-        return $this->render('embedded_clients/add.html.twig', [
-            'TODO' => "Display add embedded client page",
-        ]);
+        return $this->render('embedded_clients/add.html.twig');
     }
 }

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{% import "_macros.twig" as macros %}
+
+{% block body %}
+
+	{{ form_start(roleForm) }}
+	{{ form_row(roleForm.name, {label: "Nom interne"}) }}
+	{{ form_row(roleForm.label, {label: "Titre"}) }}
+	<button type="submit">Ajouter</button>
+	{{ form_end(roleForm) }}
+
+{% endblock body %}

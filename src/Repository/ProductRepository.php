@@ -16,28 +16,56 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    //    /**
-    //     * @return Product[] Returns an array of Product objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Product[] Returns an array of last added Product objects
+     */
+    public function findLastAdded(int $limit): array
+    {
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.id', 'DESC')
+            ->setMaxResults($limit ?: 1)
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Product
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * @return Product[] Returns an array of Product objects
+     */
+    public function findByMatchingName(string $inputName): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.name LIKE :inputName')
+            ->setParameter('inputName', "%$inputName%")
+            ->orderBy('p.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findOneById(int $id): ?Product
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Get all product logs for a given product.
+     *
+     * @param int $productId The ID of the product.
+     * 
+     * @return ProductLog[] Returns an array of ProductLog objects
+     */
+    public function findProductLogsByProductId(int $productId): array
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.productLogs', 'pl')
+            ->where('p.id = :productId')
+            ->setParameter('productId', $productId)
+            ->orderBy('pl.created_at', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

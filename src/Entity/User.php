@@ -38,10 +38,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastName = null;
 
     #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private ?\DateTimeImmutable $created_at = null;
+    private ?\DateTimeImmutable $created_at;
 
     #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP', 'onUpdate' => 'CURRENT_TIMESTAMP'])]
-    private ?\DateTimeImmutable $updated_at = null;
+    private ?\DateTimeImmutable $updated_at;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Login::class)]
+    private $logins;
+
+    #[ORM\Column]
+    private ?bool $is_first_login = null;
 
     public function getId(): ?int
     {
@@ -82,6 +88,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$this->roles->contains($role)) {
             $this->roles[] = $role;
         }
+    }
+
+    public function removeRole(Role $role): void
+    {
+        if ($this->roles->hasElement($role)) {
+            $this->roles->removeElement($role);
+        }
+    }
+
+    public function setRoles($roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
     }
 
     /**
@@ -152,6 +172,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdatedAt(\DateTimeImmutable $updated_at): static
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function isFirstLogin(): ?bool
+    {
+        return $this->is_first_login;
+    }
+
+    public function setIsFirstLogin(bool $is_first_login): static
+    {
+        $this->is_first_login = $is_first_login;
+
+        return $this;
+    }
+
+    public function getLogins()
+    {
+        return $this->logins;
+    }
+
+    public function setLogins($logins): self
+    {
+        $this->logins = $logins;
 
         return $this;
     }

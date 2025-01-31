@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% import "_macros.twig" as macros %}
+
+{% block body %}
+
+{{ role.name }}
+{{ role.label }}
+
+Utilisateurs avec ce rôle:
+<table></table>
+<thead>
+    <th>Utilisateur</th>
+</thead>
+<tbody>
+    {% for user in users %}
+    <tr>
+        <td><a href="/users/{{ user.id }}">{{ user.lastName }} {{ user.firstName }}</a></td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+
+{% endblock body %}

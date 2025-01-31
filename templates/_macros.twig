@@ -1,7 +1,12 @@
 {% macro title(input) %}
-    {% if input is empty %}
-        Lumia
-    {% else %}
-        Lumia — {{ input }}
-    {% endif %}
+	{% if input is empty %}
+		Lumia
+	{% else %}
+		Lumia —
+		{{ input }}
+	{% endif %}
+{% endmacro %}
+
+{% macro detailsBtn(url, parameter, icon = "<i class='fa fa-eye'></i>") %}
+	<a href="{{ url }}/{{ parameter }}">{{ icon }}</a>
 {% endmacro %}

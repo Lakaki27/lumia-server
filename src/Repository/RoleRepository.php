@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Role;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,56 +15,57 @@ class RoleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find roles by their name(s).
+     * Find roles based on a custom query or criteria, if needed.
+     * Example of using custom queries.
      * 
-     * @param string|array $names
+     * @param string $criteria
      * @return Role[]
      */
-    public function findByName($names)
+    public function findRoleById(int $id): ?Role
     {
-        // If a single name is passed, convert it to an array
-        if (is_string($names)) {
-            $names = [$names];
-        }
-
-        return $this->findBy(['name' => $names]);
+        // Example: find roles based on a more complex query
+        return $this->createQueryBuilder('r')
+            ->where('r.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
-     * Find a role by its exact name.
-     * 
-     * @param string $name
-     * @return Role|null
+     * Get all Users linked to a given Role by role_id.
+     *
+     * @param int $roleId The ID of the role (EntityA)
+     * @return User[] An array of User entities
      */
-    public function findOneByName($name)
+    public function findRoleUsers(int $roleId): array
     {
-        return $this->findOneBy(['name' => $name]);
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return $qb->select('u')
+            ->from(User::class, 'u')
+            ->join('u.roles', 'r')
+            ->where('r.id = :roleId')
+            ->setParameter('roleId', $roleId)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
-     * Retrieve all roles in the database.
-     * 
-     * @return Role[]
+     * Get all Users linked to a given Role by role_id.
+     *
+     * @param string $roleName The ID of the role (EntityA)
+     * @return User[] An array of User entities
      */
-    public function findAllRoles()
+    public function findByName(string $roleName): array
     {
-        return $this->findAll();
-    }
+        $qb = $this->getEntityManager()->createQueryBuilder();
 
-    // /**
-    //  * Find roles based on a custom query or criteria, if needed.
-    //  * Example of using custom queries.
-    //  * 
-    //  * @param string $criteria
-    //  * @return Role[]
-    //  */
-    // public function findRolesByCustomCriteria($criteria)
-    // {
-    //     // Example: find roles based on a more complex query
-    //     return $this->createQueryBuilder('r')
-    //         ->where('r.name LIKE :criteria')
-    //         ->setParameter('criteria', '%' . $criteria . '%')
-    //         ->getQuery()
-    //         ->getResult();
-    // }
+        return $qb->select('u')
+            ->from(User::class, 'u')
+            ->join('u.roles', 'r')
+            ->where('r.name = :roleName')
+            ->setParameter('roleName', $roleName)
+            ->getQuery()
+            ->getResult();
+    }
 }

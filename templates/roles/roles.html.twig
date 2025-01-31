@@ -3,6 +3,23 @@
 
 {% block body %}
 
+<table>
+    <thead>
+        <th>Nom interne</th>
+        <th>Titre</th>
+        <th>Actions</th>
+    </thead>
+    <tbody>
+        {% for role in roles %}
+        <tr>
+            <td>{{ role.name }}</td>
+            <td>{{ role.label }}</td>
+            <td>O X</td>
+        </tr>{% extends 'base.html.twig' %}
+{% import "_macros.twig" as macros %}
+
+{% block body %}
+
 {{ user.firstName }}
 {{ user.lastName }}
 {{ user.email }}
@@ -25,6 +42,11 @@ Dernières connexions:
             <td>{{ login.message }}</td>
             <td>{{ login.created_at }}</td>
         </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock body %}
         {% endfor %}
     </tbody>
 </table>

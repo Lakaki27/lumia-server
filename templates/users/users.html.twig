@@ -3,6 +3,31 @@
 
 {% block body %}
 
-{{ TODO }}
+<table>
+    <thead>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Email</th>
+        <th>Roles</th>
+        <th>Actions</th>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.firstName }}</td>
+            <td>{{ user.lastName }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+                {% if user.roles|length == 1 %}
+                {{ user.roles[0] }}
+                {% else %}
+                {{ user.roles|join(', ') }}
+                {% endif %}
+            </td>
+            <td>{{ macros.detailsBtn("users", user.id) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% endblock body %}
