@@ -2,27 +2,118 @@
 
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>
-			{% block title %}
-				{{ macros.title() }}
-			{% endblock %}
-		</title>
-		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-		<link rel="icon" type="image/jpg" href="{{ asset('images/favicon.png') }}"/> {% block stylesheets %}{% endblock %}
 
-		{% block javascripts %}
-			{% block importmap %}
-				{{ importmap('app') }}
-			{% endblock %}
+<head>
+	<meta charset="UTF-8">
+	<title>
+		{% block title %}
+		{{ macros.title() }}
 		{% endblock %}
-	</head>
-	<body>
-		{% if app.user %}
-			<div class="sidebar"></div>
-		{% endif %}
+	</title>
+	<link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}" />
 
+	{% block stylesheets %} {{ encore_entry_link_tags('main_css') }} {% endblock %}
+
+	{% block javascripts %}
+	{{ encore_entry_script_tags('main_js') }}
+	{% if app.user %}
+	{{ encore_entry_script_tags('navbar_js') }}
+	{% endif %}
+	{% endblock %}
+</head>
+
+<body class="h-screen w-screen">
+	{% if app.user %}
+	<nav class="bg-(--lumia-purple)">
+		<div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+			<div class="relative flex h-16 items-center justify-between">
+				<div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+					<div class="flex shrink-0 items-center">
+						<a href="/" class="hover:cursor-pointer">
+							<img class="h-8 w-auto" src={{ asset("images/logo.png") }} alt="Lumia">
+						</a>
+					</div>
+					<div class="hidden sm:ml-6 sm:block">
+						<div class="flex space-x-4">
+							<a href="/" {% if app.request.attributes.get('_route')=="index" %}
+								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-(--lumia-gold)"
+								aria-current="page" {% else %}
+								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-(--lumia-gold)"
+								{% endif %}>
+								Accueil
+							</a>
+							<a href="/products" {% if app.request.attributes.get('_route') starts with "products" %}
+								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-(--lumia-gold)"
+								aria-current="page" {% else %}
+								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-(--lumia-gold)"
+								{% endif %}>
+								Articles
+							</a>
+							<a href="/users" {% if app.request.attributes.get('_route') starts with "users" %}
+								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-(--lumia-gold)"
+								aria-current="page" {% else %}
+								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-(--lumia-gold)"
+								{% endif %}>
+								Utilisateurs
+							</a>
+							{% if is_granted('ROLE_MANAGER') %}
+							<a href="/roles" {% if app.request.attributes.get('_route') starts with "roles" %}
+								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-(--lumia-gold)"
+								aria-current="page" {% else %}
+								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-(--lumia-gold)"
+								{% endif %}>
+								Accès
+							</a>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+				<div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+					<div class="relative ml-3">
+						<div>
+							<button type="button"
+								class="relative flex rounded-full text-sm hover:cursor-pointer hover:text-(--lumia-gold)" {#focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden#}
+								id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+								<span class="absolute -inset-1.5"></span>
+								<i class="fa-solid fa-user text-3xl text-white"></i>
+							</button>
+						</div>
+
+						<div id="user-menu" class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
+							role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+							<!-- Active: "bg-gray-100 outline-hidden", Not Active: "" -->
+							<a href="/users/me" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
+								id="user-menu-item-0">Mon profil</a>
+							<a href="/logout" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
+								id="user-menu-item-2">Déconnexion</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{# <!-- Mobile menu, show/hide based on menu state. -->
+		<div class="sm:hidden" id="mobile-menu">
+			<div class="space-y-1 px-2 pt-2 pb-3">
+				<!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+				<a href="#" class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
+					aria-current="page">Dashboard</a>
+				<a href="#"
+					class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Team</a>
+				<a href="#"
+					class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Projects</a>
+				<a href="#"
+					class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a>
+			</div>
+		</div> #}
+	</nav>
+
+	{% else %}
+	Vous n'êtes pas connecté !
+	{% endif %}
+	<div class="container w-100">
 		{% block body %}{% endblock %}
-	</body>
+	</div>
+</body>
+
 </html>

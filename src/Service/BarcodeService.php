@@ -11,10 +11,10 @@ class BarcodeService
      * @var string The input 12 character barcode.
      * @return string|null The complete 13 character barcode, or null if the input barcode is incorrect.
      */
-    public function addCheckDigit(string $inputBarcode): string
+    public function addCheckDigit(string $inputBarcode): string|bool
     {
-        if (strlen($inputBarcode) !== 12 || ctype_digit($inputBarcode)) {
-            return null;
+        if (strlen($inputBarcode) !== 12 || !ctype_digit($inputBarcode)) {
+            return false;
         }
 
         /*

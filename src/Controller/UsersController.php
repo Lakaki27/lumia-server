@@ -95,8 +95,19 @@ final class UsersController extends AbstractController
         ]);
     }
 
+    #[Route("/me", name: 'users_me')]
+    public function userMe(): Response
+    {
+        $user = $this->getUser();
 
+        if (!$user) {
+            return $this->redirectToRoute("users_all");
+        }
 
+        return $this->render('users/details.html.twig', [
+            "user" => $user
+        ]);
+    }
 
     #[Route("/{id}", name: 'users_details')]
     public function usersDetails(int $id): Response

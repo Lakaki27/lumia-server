@@ -5,8 +5,8 @@
 
 <table>
     <thead>
-        <th>Nom interne</th>
-        <th>Titre</th>
+        <th>Nom</th>
+        <th>Label</th>
         <th>Actions</th>
     </thead>
     <tbody>
@@ -15,38 +15,7 @@
             <td>{{ role.name }}</td>
             <td>{{ role.label }}</td>
             <td>O X</td>
-        </tr>{% extends 'base.html.twig' %}
-{% import "_macros.twig" as macros %}
-
-{% block body %}
-
-{{ user.firstName }}
-{{ user.lastName }}
-{{ user.email }}
-
-{% if user.roles|length == 1 %}
-{{ user.roles[0] }}
-{% else %}
-{{ user.roles|join(', ') }}
-{% endif %}
-
-Dernières connexions:
-<table></table>
-    <thead>
-        <th>Message</th>
-        <th>Heure</th>
-    </thead>
-    <tbody>
-        {% for login in logins %}
-        <tr>
-            <td>{{ login.message }}</td>
-            <td>{{ login.created_at }}</td>
         </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-{% endblock body %}
         {% endfor %}
     </tbody>
 </table>

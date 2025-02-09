@@ -1,0 +1,12 @@
+@import "tailwindcss" important;
+
+:root {
+    --lumia-purple: #542292;
+    --lumia-gold: #BAAB5C;
+    --lumia-gray: #E2E6E8;
+}
+
+/* 
+body {
+    background-color: red;
+} */

@@ -13,20 +13,27 @@
 {{ user.roles|join(', ') }}
 {% endif %}
 
+{% if logins is defined %}
 Dernières connexions:
 <table></table>
-    <thead>
-        <th>Message</th>
-        <th>Heure</th>
-    </thead>
-    <tbody>
-        {% for login in logins %}
-        <tr>
-            <td>{{ login.message }}</td>
-            <td>{{ login.created_at }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
+<thead>
+    <th>Message</th>
+    <th>Heure</th>
+</thead>
+<tbody>
+    {% for login in logins %}
+    <tr>
+        <td>{{ login.message }}</td>
+        <td>{{ login.created_at }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
 </table>
+{% else %}
+<br />
+<span class="text-red-600">
+    users/me renvoie qu'une userinterface au lieu d'un user donc pas possible de faire un getLogins
+</span>
+{% endif %}
 
 {% endblock body %}

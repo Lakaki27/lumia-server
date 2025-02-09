@@ -30,3 +30,6 @@ services:
             $entityManager: '@doctrine.orm.entity_manager'
     
     App\Service\PasswordGeneratorService: ~
+
+parameters:
+    app.barcodePrefix: "3022500"

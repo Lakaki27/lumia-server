@@ -3,4 +3,24 @@
 
 {% block body %}
 
+<table>
+    <thead>
+        <th>Nom</th>
+        <th>Code-barre</th>
+        <th>Quantité actuelle</th>
+        <th>Actions</th>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.barcode }}</td>
+            <td>{{ product.amount }}</td>
+            <td>O X</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
 {% endblock body %}

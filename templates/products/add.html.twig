@@ -2,5 +2,12 @@
 {% import "_macros.twig" as macros %}
 
 {% block body %}
-    
+
+	{{ form_start(productForm) }}
+	{{ form_row(productForm.name, {label: "Nom"}) }}
+	{{ form_row(productForm.barcode, {label: "Code-barre"}) }}
+	{{ form_row(productForm.amount, {label: "Quantité actuelle"}) }}
+	<button type="submit">Ajouter</button>
+	{{ form_end(productForm) }}
+
 {% endblock body %}
