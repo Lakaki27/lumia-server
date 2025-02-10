@@ -63,6 +63,8 @@ final class RolesController extends AbstractController
             return $this->redirectToRoute("roles_all");
         }
 
+        //TODO: check if role isn't used in security.yaml. could consider deleting roles table and using strings instead
+
         $em->remove($role);
         $em->flush();
 
