@@ -16,7 +16,7 @@
             <td>{{ product.name }}</td>
             <td>{{ product.barcode }}</td>
             <td>{{ product.amount }}</td>
-            <td>O X</td>
+            <td>{{ macros.clickableBtn("products", product.id) }}{{ macros.deleteBtn("products/delete", product.id) }}</td>
         </tr>
         {% endfor %}
     </tbody>

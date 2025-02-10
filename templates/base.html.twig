@@ -12,9 +12,9 @@
 	</title>
 	<link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}" />
 
-	{% block stylesheets %} {{ encore_entry_link_tags('main_css') }} {% endblock %}
+	{% block css %} {{ encore_entry_link_tags('main_css') }} {% endblock %}
 
-	{% block javascripts %}
+	{% block js %}
 	{{ encore_entry_script_tags('main_js') }}
 	{% if app.user %}
 	{{ encore_entry_script_tags('navbar_js') }}
@@ -25,7 +25,7 @@
 <body class="h-screen w-screen">
 	{% if app.user %}
 	<nav class="bg-(--lumia-purple)">
-		<div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+		<div class="mx-auto max-w-7xl px-2">
 			<div class="relative flex h-16 items-center justify-between">
 				<div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
 					<div class="flex shrink-0 items-center">
@@ -36,32 +36,30 @@
 					<div class="hidden sm:ml-6 sm:block">
 						<div class="flex space-x-4">
 							<a href="/" {% if app.request.attributes.get('_route')=="index" %}
-								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-(--lumia-gold)"
+								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
 								aria-current="page" {% else %}
-								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-(--lumia-gold)"
-								{% endif %}>
+								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:underline" {% endif %}>
 								Accueil
 							</a>
 							<a href="/products" {% if app.request.attributes.get('_route') starts with "products" %}
-								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-(--lumia-gold)"
+								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
 								aria-current="page" {% else %}
-								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-(--lumia-gold)"
-								{% endif %}>
+								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:underline" {% endif %}>
 								Articles
 							</a>
+							{% if is_granted('ROLE_MANAGER') %}
 							<a href="/users" {% if app.request.attributes.get('_route') starts with "users" %}
-								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-(--lumia-gold)"
+								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
 								aria-current="page" {% else %}
-								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-(--lumia-gold)"
-								{% endif %}>
+								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:underline" {% endif %}>
 								Utilisateurs
 							</a>
-							{% if is_granted('ROLE_MANAGER') %}
+							{% endif %}
+							{% if is_granted('ROLE_DEV') %}
 							<a href="/roles" {% if app.request.attributes.get('_route') starts with "roles" %}
-								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-(--lumia-gold)"
+								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
 								aria-current="page" {% else %}
-								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-(--lumia-gold)"
-								{% endif %}>
+								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:underline" {% endif %}>
 								Accès
 							</a>
 							{% endif %}
@@ -72,20 +70,22 @@
 					<div class="relative ml-3">
 						<div>
 							<button type="button"
-								class="relative flex rounded-full text-sm hover:cursor-pointer hover:text-(--lumia-gold)" {#focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden#}
-								id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+								class="relative flex rounded-full text-sm hover:cursor-pointer hover:text-(--lumia-gold)"
+								{#focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800
+								focus:outline-hidden#} id="user-menu-button" aria-expanded="false" aria-haspopup="true">
 								<span class="absolute -inset-1.5"></span>
 								<i class="fa-solid fa-user text-3xl text-white"></i>
 							</button>
 						</div>
 
-						<div id="user-menu" class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
+						<div id="user-menu"
+							class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden"
 							role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
 							<!-- Active: "bg-gray-100 outline-hidden", Not Active: "" -->
-							<a href="/users/me" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
-								id="user-menu-item-0">Mon profil</a>
-							<a href="/logout" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
-								id="user-menu-item-2">Déconnexion</a>
+							<a href="/users/me" class="block px-4 py-2 text-sm text-gray-700 hover:underline"
+								role="menuitem" tabindex="-1" id="user-menu-item-0">Mon profil</a>
+							<a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:underline"
+								role="menuitem" tabindex="-1" id="user-menu-item-2">Déconnexion</a>
 						</div>
 					</div>
 				</div>
@@ -107,9 +107,6 @@
 			</div>
 		</div> #}
 	</nav>
-
-	{% else %}
-	Vous n'êtes pas connecté !
 	{% endif %}
 	<div class="container w-100">
 		{% block body %}{% endblock %}

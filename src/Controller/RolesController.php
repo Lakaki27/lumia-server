@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Role;
 use App\Form\RoleFormType;
 use App\Repository\RoleRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,6 +48,25 @@ final class RolesController extends AbstractController
         return $this->render('roles/add.html.twig', [
             'roleForm' => $form,
         ]);
+    }
+
+    #[Route("/delete/{id}", name: 'roles_delete')]
+    public function roleDelete(int $id, EntityManagerInterface $em): Response
+    {
+        if (!is_int($id)) {
+            return $this->redirectToRoute("roles_all");
+        }
+
+        $role = $this->roleRepository->findOneById($id);
+
+        if (!$role) {
+            return $this->redirectToRoute("roles_all");
+        }
+
+        $em->remove($role);
+        $em->flush();
+
+        return $this->json(["success" => true, "message" => "Rôle supprimé !"]);
     }
 
     #[Route("/{id}", name: 'roles_details')]

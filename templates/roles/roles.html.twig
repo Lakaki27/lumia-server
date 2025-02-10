@@ -14,7 +14,7 @@
         <tr>
             <td>{{ role.name }}</td>
             <td>{{ role.label }}</td>
-            <td>O X</td>
+            <td>{{ macros.clickableBtn("roles", role.id) }}{{ macros.deleteBtn("roles/delete", role.id) }}</td>
         </tr>
         {% endfor %}
     </tbody>

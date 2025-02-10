@@ -20,6 +20,8 @@ Encore
     .addEntry("main_js", "./assets/js/main.js")
     .addEntry("navbar_js", "./assets/js/navbar.js")
 
+    .addEntry("users_details_js", "./assets/js/pages/users/details.js")
+
     /**
      * CSS ENTRIES
      */

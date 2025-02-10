@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Form\ProductFormType;
 use App\Repository\ProductRepository;
-use App\Repository\UserRepository;
 use App\Service\BarcodeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -73,6 +72,25 @@ final class ProductsController extends AbstractController
         return $this->render('products/add.html.twig', [
             'productForm' => $form,
         ]);
+    }
+
+    #[Route("/delete/{id}", name: 'products_delete')]
+    public function productDelete(int $id, EntityManagerInterface $em): Response
+    {
+        if (!is_int($id)) {
+            return $this->redirectToRoute("products_all");
+        }
+
+        $product = $this->productRepository->findOneById($id);
+
+        if (!$product) {
+            return $this->redirectToRoute("products_all");
+        }
+
+        $em->remove($product);
+        $em->flush();
+
+        return $this->json(["success" => true, "message" => "Rôle supprimé !"]);
     }
 
     #[Route("/{id}", name: 'products_details')]

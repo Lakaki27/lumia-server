@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\Mime\Header\Headers;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -98,15 +97,38 @@ final class UsersController extends AbstractController
     #[Route("/me", name: 'users_me')]
     public function userMe(): Response
     {
-        $user = $this->getUser();
+        $userIdentifier = $this->getUser()->getUserIdentifier();
+
+        $user = $this->userRepository->findOneByEmail($userIdentifier);
+        $logins = $user->getLogins();
 
         if (!$user) {
             return $this->redirectToRoute("users_all");
         }
 
         return $this->render('users/details.html.twig', [
-            "user" => $user
+            "user" => $user,
+            "logins" => $logins
         ]);
+    }
+
+    #[Route("/delete/{id}", name: 'users_delete')]
+    public function userDelete(int $id, EntityManagerInterface $em): Response
+    {
+        if (!is_int($id)) {
+            return $this->redirectToRoute("users_all");
+        }
+
+        $user = $this->userRepository->findOneById($id);
+
+        if (!$user) {
+            return $this->redirectToRoute("users_all");
+        }
+
+        $em->remove($user);
+        $em->flush();
+
+        return $this->json(["success" => true, "message" => "Utilisateur supprimé !"]);
     }
 
     #[Route("/{id}", name: 'users_details')]
@@ -117,11 +139,16 @@ final class UsersController extends AbstractController
         }
 
         $user = $this->userRepository->findOneById($id);
-        $logins = $user->getLogins();
 
         if (!$user) {
             return $this->redirectToRoute("users_all");
         }
+
+        if ($user->getEmail() === $this->getUser()->getUserIdentifier()) {
+            return $this->redirectToRoute("users_me");
+        }
+
+        $logins = $user->getLogins();
 
         return $this->render('users/details.html.twig', [
             "user" => $user,

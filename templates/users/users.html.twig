@@ -24,7 +24,7 @@
                 {{ user.roles|join(', ') }}
                 {% endif %}
             </td>
-            <td>{{ macros.detailsBtn("users", user.id) }}</td>
+            <td>{{ macros.clickableBtn("users", user.id) }}{{ macros.deleteBtn("users/delete", user.id) }}</td>
         </tr>
         {% endfor %}
     </tbody>
