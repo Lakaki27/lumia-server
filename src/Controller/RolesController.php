@@ -57,13 +57,15 @@ final class RolesController extends AbstractController
             return $this->redirectToRoute("roles_all");
         }
 
-        $role = $this->roleRepository->findOneById($id);
+        $role = $this->roleRepository->findRoleById($id);
+
+        if (in_array($role->getName(), ["ROLE_USER", "ROLE_MANAGER", "ROLE_DEV"])) {
+            return $this->json(["error" => true, "message" => "Ce rôle ne peut pas être supprimé !"]);
+        }
 
         if (!$role) {
             return $this->redirectToRoute("roles_all");
         }
-
-        //TODO: check if role isn't used in security.yaml. could consider deleting roles table and using strings instead
 
         $em->remove($role);
         $em->flush();
@@ -72,10 +74,10 @@ final class RolesController extends AbstractController
     }
 
     #[Route("/{id}", name: 'roles_details')]
-    public function roleDetails(int $id): Response
+    public function roleDetails(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         if (!is_int($id)) {
-            return $this->redirectToRoute("roles_details");
+            return $this->redirectToRoute("roles_all");
         }
 
         $role = $this->roleRepository->findRoleById($id);
@@ -86,9 +88,25 @@ final class RolesController extends AbstractController
 
         $users = $this->roleRepository->findRoleUsers($id);
 
+        $form = $this->createForm(RoleFormType::class, $role);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $entityManager->persist($role);
+                $entityManager->flush();
+            } else {
+                foreach ($form->getErrors(true) as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+            }
+            return $this->redirectToRoute('roles_details', ['id' => $role->getId()]);
+        }
+
         return $this->render('roles/details.html.twig', [
             "role" => $role,
-            "users" => $users
+            "users" => $users,
+            "roleForm" => $form
         ]);
     }
 }

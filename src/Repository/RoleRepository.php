@@ -19,7 +19,7 @@ class RoleRepository extends ServiceEntityRepository
      * Example of using custom queries.
      * 
      * @param string $criteria
-     * @return Role[]
+     * @return Role
      */
     public function findRoleById(int $id): ?Role
     {

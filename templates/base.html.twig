@@ -12,19 +12,29 @@
 	</title>
 	<link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}" />
 
-	{% block css %} {{ encore_entry_link_tags('main_css') }} {% endblock %}
+	{# CSS #}
+	{{ encore_entry_link_tags('main_css') }}
 
-	{% block js %}
+	{% block css %}
+	{% endblock %}
+
+	{# JS #}
 	{{ encore_entry_script_tags('main_js') }}
 	{% if app.user %}
 	{{ encore_entry_script_tags('navbar_js') }}
 	{% endif %}
+
+	{% block js %}
 	{% endblock %}
 </head>
 
-<body class="h-screen w-screen">
+<body class="h-screen w-screen
+{% if app.request.attributes.get('_route')=="app_login" %}
+!bg-(--lumia-purple)
+{% endif %}
+">
 	{% if app.user %}
-	<nav class="bg-(--lumia-purple)">
+	<nav class="bg-(--lumia-purple) h-[7vh] min-h-[66px]">
 		<div class="mx-auto max-w-7xl px-2">
 			<div class="relative flex h-16 items-center justify-between">
 				<div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
@@ -35,7 +45,7 @@
 					</div>
 					<div class="hidden sm:ml-6 sm:block">
 						<div class="flex space-x-4">
-							<a href="/" {% if app.request.attributes.get('_route')=="index" %}
+							<a href="/" {% if app.request.attributes.get('_route') starts with "index" %}
 								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
 								aria-current="page" {% else %}
 								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:underline" {% endif %}>
@@ -60,7 +70,15 @@
 								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
 								aria-current="page" {% else %}
 								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:underline" {% endif %}>
-								Accès
+								Niveaux d'accès
+							</a>
+							{% endif %}
+							{% if is_granted('ROLE_DEV') %}
+							<a href="/embedded-clients" {% if app.request.attributes.get('_route') starts with "embedded" %}
+								class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
+								aria-current="page" {% else %}
+								class="rounded-md px-3 py-2 text-sm font-medium text-white hover:underline" {% endif %}>
+								Périphériques
 							</a>
 							{% endif %}
 						</div>
@@ -108,9 +126,10 @@
 		</div> #}
 	</nav>
 	{% endif %}
-	<div class="container w-100">
+	<div class="w-[98vw] h-[91vh] m-4">
 		{% block body %}{% endblock %}
 	</div>
+	{% block flash %}{% endblock %}
 </body>
 
 </html>

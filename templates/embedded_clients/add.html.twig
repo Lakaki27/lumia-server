@@ -2,7 +2,26 @@
 {% import "_macros.twig" as macros %}
 
 {% block body %}
+<h1 class="text-3xl font-bold">Nouveau rôle</h1>
+<div class="w-250 flex flex-row gap-4 justify-between mb-20">
+	<div class="flex">
+		{{ form_start(embeddedClientForm) }}
+		<div class="mb-5">
+			<div>
+				{{ form_label(embeddedClientForm.serial, "Numéro de série (à 16 chiffres): ") }}
+				{{ form_widget(embeddedClientForm.serial) }}
+				{% if form_errors(embeddedClientForm.serial) %}
+				<div class="text-red-500">{{ form_errors(embeddedClientForm.serial) }}</div>
+				{% endif %}
+			</div>
+		</div>
 
-{{ TODO }}
+		<button
+			class="cursor-pointer flex items-center gap-2 min-h-[36px] min-w-[36px] text-center justify-center transition border-(--lumia-purple) border-1 bg-(--lumia-purple) px-2 py-1 rounded text-white hover:bg-white hover:border-(--lumia-gold) hover:text-(--lumia-gold)"
+			type="submit">Ajouter</button>
+
+		{{ form_end(embeddedClientForm) }}
+	</div>
+</div>
 
 {% endblock body %}

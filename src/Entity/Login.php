@@ -58,7 +58,7 @@ class Login
         return $this->user;
     }
 
-    public function setUser(int $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
 

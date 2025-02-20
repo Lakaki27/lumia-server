@@ -20,19 +20,29 @@ class ProductFormType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'constraints' => [
-                    new NotBlank(),
-                    new Length(["min" => 3, "max" => 50])
+                    new NotBlank(["message" => "Le nom ne peut pas être vide !"]),
+                    new Length([
+                        "min" => 3,
+                        "max" => 50,
+                        "minMessage" => "Le nom doit faire entre 3 et 50 caractères !",
+                        "maxMessage" => "Le nom doit faire entre 3 et 50 caractères !"
+                    ])
                 ]
             ])
             ->add('barcode', TextType::class, [
                 'constraints' => [
-                    new NotBlank(),
-                    new Length(["min" => 5, "max" => 5])
+                    new NotBlank(["message" => "Le code-barre ne peut pas être vide !"]),
+                    new Length([
+                        "min" => 5,
+                        "max" => 5,
+                        "minMessage" => "Le code-barre doit faire exactement 5 caractères !",
+                        "maxMessage" => "Le code-barre doit faire exactement 5 caractères !"
+                    ])
                 ]
             ])
             ->add('amount', TextType::class, [
                 'constraints' => [
-                    new NotBlank(),
+                    new NotBlank(["message" => "La quantité ne peut pas être vide !"]),
                 ]
             ]);
     }

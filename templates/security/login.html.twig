@@ -2,33 +2,47 @@
 {% import "_macros.twig" as macros %}
 
 {% block title %}
-    {{ macros.title("Connexion") }}
+{{ macros.title("Connexion") }}
 {% endblock %}
 
 {% block body %}
-	<form method="post">
-		{% if error %}
-			<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-		{% endif %}
-
-		{% if app.user %}
+<div class="flex flex-col justify-center items-center w-full h-full">
+	<div class="flex justify-center align-center flex-col gap-10 w-auto h-125 bg-white shadow-md rounded-[.4rem]" style="padding: 0px 50px;">
+		<div class="flex justify-center items-center">
+			<h1 class="text-9xl font-bold">LU</h1>
+			<img class="w-[7em] h-[6em] ml-[-10px] mb-[-6px]" src="{{ asset('images/logo.png') }}" alt="Mili">
+			<h1 class="text-9xl font-bold">IA</h1>
+		</div>
+		<form class="w-full" method="post">
 			<div class="mb-3">
-				You are logged in as
-				{{ app.user.userIdentifier }},
-				<a href="{{ path('app_logout') }}">Logout</a>
+				<label for="inputEmail">Email</label>
+				<input type="email" value="{{ last_username }}" name="email" id="inputEmail"
+					class="form-control {% if error %} border-2 border-solid border-red-600 focus:border-red-600 {% else %} border-1 border-solid border-gray-200 {% endif %}"
+					autocomplete="email" required autofocus>
 			</div>
-		{% endif %}
+			<div class="{% if error %} mb-3 {% else %} mb-11 {% endif %}">
+				<label for="inputPassword">Password</label>
+				<input type="password" name="password" id="inputPassword"
+				class="form-control {% if error %} border-2 border-solid border-red-600 focus:border-red-600 {% else %} border-1 border-solid border-gray-200 {% endif %}"
+					autocomplete="current-password" required>
+			</div>
 
-		<h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-		<label for="inputEmail">Email</label>
-		<input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-		<label for="inputPassword">Password</label>
-		<input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+			<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-		<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-		<button class="btn btn-lg btn-primary" type="submit">
-			Sign in
-		</button>
-	</form>
+			{% if error %}
+			<div class="text-red-600 mb-3">
+				{# {{ error.messageKey|trans(error.messageData, 'security') }} #}
+				Identifiants invalides !
+			</div>
+			{% endif %}
+			<button class="cursor-pointer flex items-center gap-2 min-h-[36px] min-w-[36px] text-center justify-center transition border-(--lumia-purple) border-1 bg-(--lumia-purple) px-2 py-1 rounded text-white hover:bg-white hover:border-(--lumia-gold) hover:text-(--lumia-gold)" type="submit">
+				Sign in
+			</button>
+		</form>
+	</div>
+</div>
 {% endblock %}
+
+{% block css %}
+{{ encore_entry_link_tags("main_css") }}
+{% endblock css %}

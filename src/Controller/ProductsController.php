@@ -53,20 +53,22 @@ final class ProductsController extends AbstractController
         //     return $this->redirectToRoute('users_all');
         // }
 
-        $user = new Product();
-        $form = $this->createForm(ProductFormType::class, $user);
+        $product = new Product();
+        $form = $this->createForm(ProductFormType::class, $product);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $now = new \DateTimeImmutable();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $now = new \DateTimeImmutable();
 
-            $user->setCreatedAt($now);
-            $user->setUpdatedAt($now);
+                $product->setCreatedAt($now);
+                $product->setUpdatedAt($now);
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+                $entityManager->persist($product);
+                $entityManager->flush();
 
-            return $this->redirectToRoute('products_all');
+                return $this->redirectToRoute('products_details', ["id" => $product->getId()]);
+            }
         }
 
         return $this->render('products/add.html.twig', [
@@ -94,7 +96,7 @@ final class ProductsController extends AbstractController
     }
 
     #[Route("/{id}", name: 'products_details')]
-    public function productDetails(int $id): Response
+    public function productDetails(BarcodeService $barcodeService, Request $request, int $id, EntityManagerInterface $entityManager): Response
     {
         if (!is_int($id)) {
             return $this->redirectToRoute("products_all");
@@ -106,8 +108,29 @@ final class ProductsController extends AbstractController
             return $this->redirectToRoute("products_all");
         }
 
+        $twelveCharCode = "{$this->getParameter("app.barcodePrefix")}{$product->getBarcode()}";
+        $barcode = $barcodeService->addCheckDigit($twelveCharCode);
+
+        $form = $this->createForm(ProductFormType::class, $product);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $entityManager->persist($product);
+                $entityManager->flush();
+            } else {
+                foreach ($form->getErrors(true) as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+            }
+            return $this->redirectToRoute('products_details', ['id' => $product->getId()]);
+        }
+
+
         return $this->render('products/details.html.twig', [
             "product" => $product,
+            "barcode" => $barcode,
+            "productForm" => $form
         ]);
     }
 }

@@ -3,38 +3,74 @@
 
 {% block body %}
 
-{{ user.firstName }}
-{{ user.lastName }}
-{{ user.email }}
+<h1 class="text-3xl font-bold">Informations sur l'utilisateur:
+    <span class="text-(--lumia-gold)">
+        {{ user.lastName }} {{ user.firstName }}
+    </span>
+</h1>
+<h2 class="text-xl font-bold text-(--lumia-purple) mb-4">{{ user.roles|join(', ') }}</h2>
+<div class="flex flex-row w-full">
+    <div id="loginsDiv" style="width: 75%;">
+        <h2 class="text-2xl font-bold">
+            Dernières connexions:
+        </h2>
+        <table>
+            <thead class="bg-gray-600 text-white">
+                <th>Heure</th>
+                <th>Message</th>
+            </thead>
+            <tbody class="list">
+                {% if logins is defined and logins|length > 0%}
+                {% for login in logins %}
+                <tr>
+                    <td class="border-solid border-1 border-gray-400">{{ login.createdAt|date('Y-m-d H:i:s') }}</td>
+                    <td class="border-solid border-1 border-gray-400">{{ login.message }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="2">Aucune connexion !</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
 
-{% if user.roles|length == 1 %}
-{{ user.roles[0] }}
-{% else %}
-{{ user.roles|join(', ') }}
-{% endif %}
-
-{% if logins is defined %}
-Dernières connexions:
-<table></table>
-<thead>
-    <th>Message</th>
-    <th>Heure</th>
-</thead>
-<tbody>
-    {% for login in logins %}
-    <tr>
-        <td>{{ login.message }}</td>
-        <td>{{ login.created_at }}</td>
-    </tr>
-    {% endfor %}
-</tbody>
-</table>
-{% else %}
-<br />
-<span class="text-red-600">
-    users/me renvoie qu'une userinterface au lieu d'un user donc pas possible de faire un getLogins
-</span>
-{% endif %}
+    {% if app.request.get('_route') == "users_me" or is_granted('ROLE_MANAGER') %}
+    <div class="flex flex-col gap-4 pl-5 border-l-1 border-l-solid border-l-gray-400" id="formDiv">
+        <div>
+            <h2 class="text-2xl font-bold">
+                Informations:
+            </h2>
+        </div>
+        {{ form_start(userForm) }}
+        <div class="flex flex-row gap-4 my-1">
+            {{ form_row(userForm.first_name, {label: "Prénom"}) }}
+            {{ form_row(userForm.last_name, {label: "Nom"}) }}
+        </div>
+        <div class="my-1">
+            {{ form_row(userForm.email, {label: 'Adresse mail'}) }}
+        </div>
+        <div class="my-1">
+            {# {{ form_row(userForm.roles, {label: 'Rôles'}) }} #}
+            {{ form_row(userForm.roles, {label: 'Rôles', attr: {'class': 'form-select block w-full rounded-md
+            border-gray-300 px-2 pt-2 shadow-sm'}}) }}
+            {# focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 #}
+        </div>
+        {% for message in app.flashes('error') %}
+        <div class="text-red-600">
+            {{ message }}
+        </div>
+        {% endfor %}
+        <button
+            class="cursor-pointer flex items-center gap-2 min-h-[36px] min-w-[36px] text-center justify-center transition border-(--lumia-purple) border-1 bg-(--lumia-purple) px-2 py-1 rounded text-white hover:bg-white hover:border-(--lumia-gold) hover:text-(--lumia-gold)"
+            type="submit">
+            Mettre à jour
+        </button>
+        {{ form_end(userForm) }}
+    </div>
+    {% endif %}
+</div>
 
 {% endblock body %}
 

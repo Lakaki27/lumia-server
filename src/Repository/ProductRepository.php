@@ -22,7 +22,7 @@ class ProductRepository extends ServiceEntityRepository
     public function findLastAdded(int $limit): array
     {
         return $this->createQueryBuilder('p')
-            ->orderBy('p.id', 'DESC')
+            ->orderBy('p.created_at', 'DESC')
             ->setMaxResults($limit ?: 1)
             ->getQuery()
             ->getResult();
@@ -36,7 +36,7 @@ class ProductRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.name LIKE :inputName')
             ->setParameter('inputName', "%$inputName%")
-            ->orderBy('p.id', 'ASC')
+            ->orderBy("created_at", "DESC")
             ->setMaxResults(10)
             ->getQuery()
             ->getResult();

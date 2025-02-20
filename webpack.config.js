@@ -17,10 +17,33 @@ Encore
     /**
      * JS ENTRIES
      */
+
+    // GLOBAL
     .addEntry("main_js", "./assets/js/main.js")
     .addEntry("navbar_js", "./assets/js/navbar.js")
 
+    // LIBRARIES
+    .addEntry("jsbarcode", "./node_modules/jsbarcode/dist/JsBarcode.all.min.js")
+
+    // USERS
+    .addEntry("users_users_js", "./assets/js/pages/users/users.js")
     .addEntry("users_details_js", "./assets/js/pages/users/details.js")
+    .addEntry("users_add_js", "./assets/js/pages/users/add.js")
+
+    // PRODUCTS
+    .addEntry("products_products_js", "./assets/js/pages/products/products.js")
+    .addEntry("products_details_js", "./assets/js/pages/products/details.js")
+    .addEntry("products_add_js", "./assets/js/pages/products/add.js")
+
+    // ROLES
+    .addEntry("roles_roles_js", "./assets/js/pages/roles/roles.js")
+    .addEntry("roles_details_js", "./assets/js/pages/roles/details.js")
+    .addEntry("roles_add_js", "./assets/js/pages/roles/add.js")
+
+    // EMBEDDED CLIENTS
+    .addEntry("embedded-clients_embedded-clients_js", "./assets/js/pages/embedded_clients/embedded_clients.js")
+    .addEntry("embedded-clients_details_js", "./assets/js/pages/embedded_clients/details.js")
+    .addEntry("embedded-clients_add_js", "./assets/js/pages/embedded_clients/add.js")
 
     /**
      * CSS ENTRIES

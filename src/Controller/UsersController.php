@@ -35,7 +35,7 @@ final class UsersController extends AbstractController
     #[Route("", name: 'users_all')]
     public function allUsers(): Response
     {
-        $users = $this->userRepository->findAll();
+        $users = $this->userRepository->findBy([], ['created_at' => 'DESC']);
 
         return $this->render('users/users.html.twig', [
             "users" => $users,
@@ -64,10 +64,12 @@ final class UsersController extends AbstractController
             $user->setIsFirstLogin(true);
 
             $rolesIds = $form->get('roles')->getData();
-            $roles = $this->roleRepository->findBy(['id' => $rolesIds]);
 
-            $user->setRoles($roles);
-
+            if ($rolesIds) {
+                $roles = $this->roleRepository->findBy(['id' => $rolesIds]);
+                $user->setRoles($roles);
+            }
+            
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -86,6 +88,9 @@ final class UsersController extends AbstractController
 
             $mailer->send($mail);
 
+            $this->addFlash('userAddedMessage', 'Nouvel utilisateur ajouté !');
+            $this->addFlash('userAddedIcon', 'success');
+
             return $this->redirectToRoute('users_all');
         }
 
@@ -95,20 +100,38 @@ final class UsersController extends AbstractController
     }
 
     #[Route("/me", name: 'users_me')]
-    public function userMe(): Response
+    public function userMe(Request $request, EntityManagerInterface $entityManager): Response
     {
         $userIdentifier = $this->getUser()->getUserIdentifier();
 
         $user = $this->userRepository->findOneByEmail($userIdentifier);
         $logins = $user->getLogins();
+        $logins = $logins->slice(-10);
+        $logins = array_reverse($logins);
 
         if (!$user) {
             return $this->redirectToRoute("users_all");
         }
 
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $entityManager->persist($user);
+                $entityManager->flush();
+            } else {
+                foreach ($form->getErrors(true) as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+            }
+            return $this->redirectToRoute('users_details', ['id' => $user->getId()]);
+        }
+
         return $this->render('users/details.html.twig', [
             "user" => $user,
-            "logins" => $logins
+            "logins" => $logins,
+            "userForm" => $form
         ]);
     }
 
@@ -132,7 +155,7 @@ final class UsersController extends AbstractController
     }
 
     #[Route("/{id}", name: 'users_details')]
-    public function usersDetails(int $id): Response
+    public function usersDetails(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         if (!is_int($id)) {
             return $this->redirectToRoute("users_all");
@@ -149,10 +172,28 @@ final class UsersController extends AbstractController
         }
 
         $logins = $user->getLogins();
+        $logins = $logins->slice(-10);
+        $logins = array_reverse($logins);
+
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $entityManager->persist($user);
+                $entityManager->flush();
+            } else {
+                foreach ($form->getErrors(true) as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+            }
+            return $this->redirectToRoute('users_details', ['id' => $user->getId()]);
+        }
 
         return $this->render('users/details.html.twig', [
             "user" => $user,
-            "logins" => $logins
+            "logins" => $logins,
+            "userForm" => $form
         ]);
     }
 }

@@ -1,14 +1,86 @@
+{# {% extends 'base.html.twig' %}
+{% import "_macros.twig" as macros %}
+
+{% block body %}
+<h1 class="text-3xl font-bold">Nouvel article</h1>
+<div class="w-250 flex flex-row gap-4 justify-between mb-20">
+	<div class="flex">
+		{{ form_start(productForm) }}
+		<div>
+			{{ form_row(productForm.name, {label: "Nom: "}) }}
+		</div>
+		<div class="flex flex-row gap-4 mb-5">
+			{{ form_row(productForm.barcode, {label: "Code-barre: "}) }}
+			{{ form_row(productForm.amount, {label: "Quantité actuelle: "}) }}
+		</div>
+		<button
+			class="cursor-pointer flex items-center gap-2 min-h-[36px] min-w-[36px] text-center justify-center transition border-(--lumia-purple) border-1 bg-(--lumia-purple) px-2 py-1 rounded text-white hover:bg-white hover:border-(--lumia-gold) hover:text-(--lumia-gold)"
+			type="submit">Ajouter</button>
+		{{ form_end(productForm) }}
+	</div>
+</div>
+
+{% endblock body %} #}
+
 {% extends 'base.html.twig' %}
 {% import "_macros.twig" as macros %}
 
 {% block body %}
+<h1 class="text-3xl font-bold">Nouvel utilisateur</h1>
+<div class="w-250 flex flex-row gap-4 justify-between mb-20">
+	<div class="flex">
+		{{ form_start(registrationForm) }}
 
-	{{ form_start(registrationForm) }}
-	{{ form_row(registrationForm.first_name, {label: "Prénom"}) }}
-	{{ form_row(registrationForm.last_name, {label: "Nom"}) }}
-	{{ form_row(registrationForm.email, {label: 'Adresse mail'}) }}
-	{{ form_row(registrationForm.roles, {label: 'Rôles'}) }}
-	<button type="submit">Habiliter</button>
-	{{ form_end(registrationForm) }}
+		<div>
+			{# Render name field and errors separately with custom styling #}
+			<div>
+				{{ form_label(registrationForm.email, "Adresse mail: ") }}
+				{{ form_widget(registrationForm.email) }}
+				{# Render errors for name field in red text using form_errors function #}
+				{% if form_errors(registrationForm.email) %}
+				<div class="text-red-500">{{ form_errors(registrationForm.email) }}</div>
+				{% endif %}
+			</div>
+		</div>
+
+		<div class="flex flex-row gap-4 mb-5">
+			{# Render barcode field and errors separately with custom styling #}
+			<div>
+				{{ form_label(registrationForm.last_name, "Nom: ") }}
+				{{ form_widget(registrationForm.last_name) }}
+				{% if form_errors(registrationForm.last_name) %}
+				<div class="text-red-500">{{ form_errors(registrationForm.last_name) }}</div>
+				{% endif %}
+			</div>
+			{# Render amount field and errors separately with custom styling #}
+			<div>
+				{{ form_label(registrationForm.first_name, "Prénom: ") }}
+				{{ form_widget(registrationForm.first_name) }}
+				{% if form_errors(registrationForm.first_name) %}
+				<div class="text-red-500">{{ form_errors(registrationForm.first_name) }}</div>
+				{% endif %}
+			</div>
+		</div>
+
+		<div>
+			{# Render name field and errors separately with custom styling #}
+			<div>
+				{{ form_label(registrationForm.roles, "Rôles: ") }}
+				{{ form_widget(registrationForm.roles, { "attr": {'class': 'form-select block w-full rounded-md
+				border-gray-300 px-2 pt-2 mb-5 shadow-sm'}}) }}
+				{# Render errors for name field in red text using form_errors function #}
+				{% if form_errors(registrationForm.roles) %}
+				<div class="text-red-500">{{ form_errors(registrationForm.roles) }}</div>
+				{% endif %}
+			</div>
+		</div>
+
+		<button
+			class="cursor-pointer flex items-center gap-2 min-h-[36px] min-w-[36px] text-center justify-center transition border-(--lumia-purple) border-1 bg-(--lumia-purple) px-2 py-1 rounded text-white hover:bg-white hover:border-(--lumia-gold) hover:text-(--lumia-gold)"
+			type="submit">Habiliter</button>
+
+		{{ form_end(registrationForm) }}
+	</div>
+</div>
 
 {% endblock body %}

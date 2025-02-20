@@ -3,21 +3,34 @@
 
 {% block body %}
 
-<table>
-    <thead>
-        <th>Nom</th>
-        <th>Label</th>
-        <th>Actions</th>
-    </thead>
-    <tbody>
-        {% for role in roles %}
-        <tr>
-            <td>{{ role.name }}</td>
-            <td>{{ role.label }}</td>
-            <td>{{ macros.clickableBtn("roles", role.id) }}{{ macros.deleteBtn("roles/delete", role.id) }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="flex flex-col justify-start items-center h-full w-full">
+    <div class="mt-[3rem] mb-[3rem]">
+        {{ macros.clickableBtn("roles", "add", "fa-solid fa-plus", "Ajouter un nouveau niveau d'accès") }}
+    </div>
+    <div id="roles">
+        <input class="search mb-[1rem]" placeholder="Chercher" />
+
+        <table class="min-w-full">
+            <thead class="bg-gray-600 text-white">
+                <th>Nom interne</th>
+                <th>Nom complet</th>
+                <th>Actions</th>
+            </thead>
+            <tbody class="list">
+                {% for role in roles %}
+                <tr>
+                    <td class="role-name border-solid border-1 border-gray-400">{{ role.name }}</td>
+                    <td class="role-slug border-solid border-1 border-gray-400">{{ role.slug }}</td>
+                    <td class="inline-flex gap-1">{{ macros.clickableBtn("roles", role.id) }}{{ macros.deleteBtn("roles/delete", role.id, "fa-solid fa-trash") }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock body %}
+
+{% block js %}
+    {{ encore_entry_script_tags('roles_roles_js') }}
+{% endblock %}

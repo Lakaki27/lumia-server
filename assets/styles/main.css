@@ -1,12 +1,56 @@
-@import "tailwindcss" important;
+@import "tailwindcss";
 
 :root {
     --lumia-purple: #542292;
     --lumia-gold: #BAAB5C;
     --lumia-gray: #E2E6E8;
+    --lumia-bg: #E2E6E844;
+    --table-cell-padding: 20px 20px 20px 5px;
 }
 
-/* 
+
 body {
-    background-color: red;
+    background-color: var(--lumia-bg);
+}
+
+input {
+    background-color: var(--lumia-gray);
+    padding: 0.3rem;
+    border-radius: 0.3rem;
+}
+/* 
+thead {
+    background-color: var(--lumia-gold);
+    color: white;
 } */
+
+th {
+    text-align: left;
+    padding: var(--table-cell-padding);
+}
+
+th:not(:first-child) {
+    border-left: 1px solid var(--lumia-bg);
+}
+
+td {
+    padding: var(--table-cell-padding);
+}
+/*
+tr {
+    border: 1px solid var(--lumia-gold);
+}
+
+tr>td {
+    border-left: 1px solid var(--lumia-gold);
+}
+*/
+tbody>tr:nth-child(even) {
+    background-color: var(--lumia-gray);
+}
+
+form div:has(> label, > input) {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}

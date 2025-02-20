@@ -3,31 +3,58 @@
 
 {% block body %}
 
-<table>
-    <thead>
-        <th>Nom</th>
-        <th>Prénom</th>
-        <th>Email</th>
-        <th>Roles</th>
-        <th>Actions</th>
-    </thead>
-    <tbody>
-        {% for user in users %}
-        <tr>
-            <td>{{ user.firstName }}</td>
-            <td>{{ user.lastName }}</td>
-            <td>{{ user.email }}</td>
-            <td>
-                {% if user.roles|length == 1 %}
-                {{ user.roles[0] }}
-                {% else %}
-                {{ user.roles|join(', ') }}
-                {% endif %}
-            </td>
-            <td>{{ macros.clickableBtn("users", user.id) }}{{ macros.deleteBtn("users/delete", user.id) }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="flex flex-col justify-start items-center h-full w-full">
+    <div class="mt-[2rem] mb-[2rem]">
+        {{ macros.clickableBtn("users", "add", "fa-solid fa-plus", "Recenser un nouvel utilisateur") }}
+    </div>
+    <div id="users">
+        <input class="search mb-[1rem]" placeholder="Chercher" />
+        <button
+            class="sort cursor-pointer transition border-(--lumia-purple) border-1 bg-(--lumia-purple) px-2 py-1 rounded text-white hover:bg-white hover:border-(--lumia-gold) hover:text-(--lumia-gold)"
+            data-sort="user-first-name">
+            Trier par nom
+        </button>
+
+        <table class="min-w-full">
+            <thead class="bg-gray-600 text-white">
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Actions</th>
+            </thead>
+            <tbody class="list">
+                {% for user in users %}
+                <tr>
+                    <td class="user-first-name border-solid border-1 border-gray-400">{{ user.firstName }}</td>
+                    <td class="user-last-name border-solid border-1 border-gray-400">{{ user.lastName }}</td>
+                    <td class="user-email border-solid border-1 border-gray-400">{{ user.email }}</td>
+                    <td class="border-solid border-1 border-gray-400">
+                        {% if user.roles|length == 1 %}
+                        {{ user.roles[0] }}
+                        {% else %}
+                        {{ user.roles|join(', ') }}
+                        {% endif %}
+                    </td>
+                    <td class="inline-flex gap-1">{{ macros.clickableBtn("users", user.id) }} {{
+                        macros.deleteBtn("users/delete", user.id, "fa-solid fa-trash") }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock body %}
+
+{% block js %}
+{{ encore_entry_script_tags('users_users_js') }}
+{% endblock %}
+
+{% block flash %}
+
+{% if app.session.flashBag.has('userAddedMessage') and app.session.flashBag.has('userAddedIcon') %}
+    <div id="flash-message" data-icon="{{ app.session.flashBag.get('userAddedIcon')[0] }}" data-message="{{ app.session.flashBag.get('userAddedMessage')[0] }}"></div>
+{% endif %}
+
+{% endblock %}

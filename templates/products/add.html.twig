@@ -1,13 +1,73 @@
+{# {% extends 'base.html.twig' %}
+{% import "_macros.twig" as macros %}
+
+{% block body %}
+<h1 class="text-3xl font-bold">Nouvel article</h1>
+<div class="w-250 flex flex-row gap-4 justify-between mb-20">
+	<div class="flex">
+		{{ form_start(productForm) }}
+		<div>
+			{{ form_row(productForm.name, {label: "Nom: "}) }}
+		</div>
+		<div class="flex flex-row gap-4 mb-5">
+			{{ form_row(productForm.barcode, {label: "Code-barre: "}) }}
+			{{ form_row(productForm.amount, {label: "Quantité actuelle: "}) }}
+		</div>
+		<button
+			class="cursor-pointer flex items-center gap-2 min-h-[36px] min-w-[36px] text-center justify-center transition border-(--lumia-purple) border-1 bg-(--lumia-purple) px-2 py-1 rounded text-white hover:bg-white hover:border-(--lumia-gold) hover:text-(--lumia-gold)"
+			type="submit">Ajouter</button>
+		{{ form_end(productForm) }}
+	</div>
+</div>
+
+{% endblock body %} #}
+
 {% extends 'base.html.twig' %}
 {% import "_macros.twig" as macros %}
 
 {% block body %}
+<h1 class="text-3xl font-bold">Nouvel article</h1>
+<div class="w-250 flex flex-row gap-4 justify-between mb-20">
+	<div class="flex">
+		{{ form_start(productForm) }}
 
-	{{ form_start(productForm) }}
-	{{ form_row(productForm.name, {label: "Nom"}) }}
-	{{ form_row(productForm.barcode, {label: "Code-barre"}) }}
-	{{ form_row(productForm.amount, {label: "Quantité actuelle"}) }}
-	<button type="submit">Ajouter</button>
-	{{ form_end(productForm) }}
+		<div>
+			{# Render name field and errors separately with custom styling #}
+			<div>
+				{{ form_label(productForm.name, "Nom: ") }}
+				{{ form_widget(productForm.name) }}
+				{# Render errors for name field in red text using form_errors function #}
+				{% if form_errors(productForm.name) %}
+				<div class="text-red-500">{{ form_errors(productForm.name) }}</div>
+				{% endif %}
+			</div>
+		</div>
+
+		<div class="flex flex-row gap-4 mb-5">
+			{# Render barcode field and errors separately with custom styling #}
+			<div>
+				{{ form_label(productForm.barcode, "Code-barre: ") }}
+				{{ form_widget(productForm.barcode) }}
+				{% if form_errors(productForm.barcode) %}
+				<div class="text-red-500">{{ form_errors(productForm.barcode) }}</div>
+				{% endif %}
+			</div>
+			{# Render amount field and errors separately with custom styling #}
+			<div>
+				{{ form_label(productForm.amount, "Quantité actuelle: ") }}
+				{{ form_widget(productForm.amount) }}
+				{% if form_errors(productForm.amount) %}
+				<div class="text-red-500">{{ form_errors(productForm.amount) }}</div>
+				{% endif %}
+			</div>
+		</div>
+
+		<button
+			class="cursor-pointer flex items-center gap-2 min-h-[36px] min-w-[36px] text-center justify-center transition border-(--lumia-purple) border-1 bg-(--lumia-purple) px-2 py-1 rounded text-white hover:bg-white hover:border-(--lumia-gold) hover:text-(--lumia-gold)"
+			type="submit">Ajouter</button>
+
+		{{ form_end(productForm) }}
+	</div>
+</div>
 
 {% endblock body %}

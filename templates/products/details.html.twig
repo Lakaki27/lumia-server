@@ -3,4 +3,45 @@
 
 {% block body %}
 
+<h1 class="text-3xl font-bold">Informations sur le produit: <span class="text-(--lumia-gold)">
+    {{ product.name }}
+</span></h1>
+<div class="w-250 flex flex-row gap-4 justify-between mb-20">
+    <div class="flex">
+        {{ form_start(productForm) }}
+        <div>
+            {{ form_row(productForm.name, {label: "Nom: "}) }}
+        </div>
+        <div class="flex flex-row gap-4 mb-5">
+            {{ form_row(productForm.barcode, {label: "Code-barre: "}) }}
+            {{ form_row(productForm.amount, {label: "Quantité actuelle: "}) }}
+        </div>
+        {% for message in app.flashes('error') %}
+        <div class="text-red-600">
+            {{ message }}
+        </div>
+        {% endfor %}
+        <button class="cursor-pointer flex items-center gap-2 min-h-[36px] min-w-[36px] text-center justify-center transition border-(--lumia-purple) border-1 bg-(--lumia-purple) px-2 py-1 rounded text-white hover:bg-white hover:border-(--lumia-gold) hover:text-(--lumia-gold)"
+        type="submit">Mettre à jour</button>
+        {{ form_end(productForm) }}
+    </div>
+    <div>
+        <svg id="barcode" jsbarcode-format="EAN13" jsbarcode-value="{{ barcode }}" jsbarcode-textmargin="0"
+            jsbarcode-fontoptions="bold">
+        </svg>
+    </div>
+</div>
+
+<h2 class="text-2xl">Dernières ventes</h2>
+{# TODO: CHARTS #}
+{# Chart de la semaine, du mois et de l'année #}
+<div>
+    <canvas></canvas>
+</div>
+
 {% endblock body %}
+
+{% block js %}
+{{ encore_entry_script_tags("products_details_js") }}
+{{ encore_entry_script_tags("jsbarcode") }}
+{% endblock js %}

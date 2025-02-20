@@ -22,11 +22,9 @@ class CustomUserProvider implements UserProviderInterface
     public function loadUserByIdentifier($email): UserInterface
     {
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-
         if (!$user) {
-            throw new \InvalidArgumentException(sprintf('User with email "%s" not found.', $email));
+            throw new UserNotFoundException("L'adresse email est invalide. Veuillez réessayer.");
         }
-
         return $user;
     }
 

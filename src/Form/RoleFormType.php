@@ -19,14 +19,24 @@ class RoleFormType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'constraints' => [
-                    new NotBlank(),
-                    new Length(["min" => 5, "max" => 50])
+                    new NotBlank(["message" => "Le nom ne peut pas être vide !"]),
+                    new Length([
+                        "min" => 5,
+                        "max" => 50,
+                        "minMessage" => "Le nom doit faire entre 5 et 50 caractères !",
+                        "maxMessage" => "Le nom doit faire entre 5 et 50 caractères !"
+                    ])
                 ]
             ])
-            ->add('label', TextType::class, [
+            ->add('slug', TextType::class, [
                 'constraints' => [
-                    new NotBlank(),
-                    new Length(["min" => 5, "max" => 50])
+                    new NotBlank(["message" => "Le descriptif ne peut pas être vide !"]),
+                    new Length([
+                        "min" => 5,
+                        "max" => 50,
+                        "minMessage" => "Le descriptif doit faire entre 5 et 50 caractères !",
+                        "maxMessage" => "Le descriptif doit faire entre 5 et 50 caractères !"
+                    ])
                 ]
             ]);
     }

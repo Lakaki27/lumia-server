@@ -3,6 +3,39 @@
 
 {% block body %}
 
-{{ TODO }}
+<div class="flex flex-col justify-start items-center h-full w-full">
+    <div class="mt-[2rem] mb-[2rem]">
+        {{ macros.clickableBtn("embedded-clients", "add", "fa-solid fa-plus", "Recenser un nouveau périphérique") }}
+    </div>
+    <div id="clients">
+        <input class="search mb-[1rem]" placeholder="Chercher" />
+
+        <table class="min-w-full">
+            <thead class="bg-gray-600 text-white">
+                <th>Numéro de série</th>
+                <th>Actions</th>
+            </thead>
+            <tbody class="list">
+                {% if clients is empty %}
+                <td colspan="4" class="text-center">Aucun client !</td>
+                {% endif %}
+
+                {% for client in clients %}
+                <tr>
+                    <td class="client-amount border-solid border-1 border-gray-400">{{ client.serial }}</td>
+                    <td class="inline-flex gap-1">{{ macros.clickableBtn("embedded-clients", client.id) }}
+                        {{ macros.deleteBtn("embedded-clients/delete", client.id, "fa-solid fa-trash") }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 
 {% endblock body %}
+
+{% block js %}
+{{ encore_entry_script_tags('embedded-clients_embedded-clients_js') }}
+{% endblock %}

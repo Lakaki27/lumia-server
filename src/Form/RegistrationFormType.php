@@ -31,28 +31,47 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('first_name', TextType::class, [
                 'constraints' => [
-                    new NotBlank(),
-                    new Length(["min" => 2, "max" => 50])
+                    new NotBlank(["message" => "Le prénom ne peut pas être vide !"]),
+                    new Length([
+                        "min" => 2,
+                        "max" => 50,
+                        "minMessage" => "Le numéro de série doit faire exactement 16 caractères !",
+                        "maxMessage" => "Le numéro de série doit faire exactement 16 caractères !"
+                    ])
                 ]
             ])
             ->add('last_name', TextType::class, [
                 'constraints' => [
-                    new NotBlank(),
-                    new Length(["min" => 2, "max" => 50])
+                    new NotBlank(["message" => "Le nom ne peut pas être vide !"]),
+                    new Length([
+                        "min" => 2,
+                        "max" => 50,
+                        "minMessage" => "Le numéro de série doit faire exactement 16 caractères !",
+                        "maxMessage" => "Le numéro de série doit faire exactement 16 caractères !"
+                    ])
                 ]
             ])
             ->add('email', EmailType::class, [
-                'constraints' => new Length(["min" => 10, "max" => 100])
+                'constraints' => [
+                    new NotBlank(["message" => "L'email ne peut pas être vide !"]),
+                    new Length([
+                        "min" => 10,
+                        "max" => 100,
+                        "minMessage" => "Le numéro de série doit faire exactement 16 caractères !",
+                        "maxMessage" => "Le numéro de série doit faire exactement 16 caractères !"
+                    ])
+                ]
             ])
             ->add('roles', ChoiceType::class, [
                 'choices' => $this->roleRepository->findAll(),
+                'required' => false,
                 'multiple' => true,
                 'choice_value' => 'id',
                 'choice_label' => 'name',
                 'choice_attr' => function ($role, $key, $index) {
                     return ['data-id' => $role->getId()];
                 },
-                'mapped' => false
+                "mapped" => false
             ]);
     }
 

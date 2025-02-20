@@ -19,7 +19,7 @@ class Role
     private ?string $name;
 
     #[ORM\Column(length: 50)]
-    private ?string $label = null;
+    private ?string $slug = null;
 
     public function getId(): ?int
     {
@@ -45,14 +45,14 @@ class Role
         return $this;
     }
 
-    public function getLabel(): ?string
+    public function getSlug(): ?string
     {
-        return $this->label;
+        return $this->slug;
     }
 
-    public function setLabel(string $label): static
+    public function setSlug(string $slug): static
     {
-        $this->label = $label;
+        $this->slug = $slug;
 
         return $this;
     }

@@ -7,14 +7,14 @@
 	{% endif %}
 {% endmacro %}
 
-{% macro clickableBtn(url, parameter, icon = "fa-solid fa-eye") %}
-	<a class="transition border-(--lumia-purple) border-1 bg-(--lumia-purple) px-2 py-1 rounded text-white hover:bg-white hover:border-(--lumia-gold) hover:text-(--lumia-gold)" href="{{ url }}/{{ parameter }}">
+{% macro clickableBtn(url, parameter, icon = "fa-solid fa-eye", textContent = "") %}
+	<a class="flex items-center gap-2 min-h-[36px] min-w-[36px] text-center justify-center transition border-(--lumia-purple) border-1 bg-(--lumia-purple) px-2 py-1 rounded text-white hover:bg-white hover:border-(--lumia-gold) hover:text-(--lumia-gold)" href="{{ url }}/{{ parameter }}">
 		<i class="{{ icon }}"></i>
-	</a>
+		{{ textContent }}</a>
 {% endmacro %}
 
-{% macro deleteBtn(url, parameter, icon = "fa-solid fa-eye") %}
-	<a class="transition border-red-600 border-1 bg-red-600 px-2 py-1 rounded text-white hover:bg-white hover:border-red-600 hover:text-red-600" href="{{ url }}/{{ parameter }}">
+{% macro deleteBtn(url, parameter, icon = "fa-solid fa-eye", textContent = "") %}
+	<a class="delete-btn flex items-center gap-2 min-h-[36px] min-w-[36px] text-center justify-center transition border-red-600 border-1 bg-red-600 px-2 py-1 rounded text-white hover:bg-white hover:border-red-600 hover:text-red-600" href="{{ url }}/{{ parameter }}">
 		<i class="{{ icon }}"></i>
-	</a>
+		{{ textContent }}</a>
 {% endmacro %}
