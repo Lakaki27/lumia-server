@@ -31,5 +31,9 @@ services:
     
     App\Service\PasswordGeneratorService: ~
 
+    App\Security\JWTAuthenticator:
+        arguments:
+            $userProvider: '@App\Security\CustomUserProvider'
+
 parameters:
     app.barcodePrefix: "3022500"
