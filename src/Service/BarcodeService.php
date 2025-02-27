@@ -61,4 +61,12 @@ class BarcodeService
 
         return "$inputBarcode$checkDigit";
     }
+
+    public function extractProductDigits(string $inputBarcode) {
+        if ((strlen($inputBarcode) !== 12 && strlen($inputBarcode) !== 13) || !ctype_digit($inputBarcode)) {
+            return false;
+        }
+
+        return substr($inputBarcode, 7, 5);
+    }
 }

@@ -45,7 +45,7 @@ class ApiAuthController extends AbstractController
         $user = $this->userRepo->findOneByEmail($email);
 
         if (!$user || !$this->passwordEncoder->isPasswordValid($user, $password)) {
-            return new JsonResponse(['message' => 'Invalid credentials'], JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['message' => 'Identifiants invalides !'], JsonResponse::HTTP_UNAUTHORIZED);
         }
         // Generate the JWT token for the authenticated user
         $token = $this->JWTManager->create($user);

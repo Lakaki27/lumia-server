@@ -36,6 +36,12 @@ class ApiRoutesController extends AbstractController
         $this->JWTManager = $JWTManager;
     }
 
+    #[Route('/verify-token', name: 'api_verify_token', methods: ['POST'])]
+    public function verifyTokenValidity(Request $request)
+    {
+        return new JsonResponse(['isValid' => true], JsonResponse::HTTP_OK);
+    }
+
     //TODO: tester ça
     #[Route('/products/sell', name: 'api_products_sell', methods: ['POST'])]
     public function declareSoldProducts(Request $request, EntityManagerInterface $entityManager)
