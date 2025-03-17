@@ -57,7 +57,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $now = new \DateTimeImmutable();
         $login = new Login();
         $login->setUser($user)
-            ->setMessage("{$user->getEmail()} authenticated succesfully on the web interface.")
+            ->setMessage("{$user->getEmail()} s'est connecté sur l'interface web.")
             ->setCreatedAt($now);
 
         $this->em->persist($login);

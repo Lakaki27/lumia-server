@@ -7,6 +7,7 @@ use App\Entity\Role;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -41,6 +42,11 @@ class ProductFormType extends AbstractType
                 ]
             ])
             ->add('amount', TextType::class, [
+                'constraints' => [
+                    new NotBlank(["message" => "La quantité ne peut pas être vide !"]),
+                ]
+            ])
+            ->add('price', NumberType::class, [
                 'constraints' => [
                     new NotBlank(["message" => "La quantité ne peut pas être vide !"]),
                 ]

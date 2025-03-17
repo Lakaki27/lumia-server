@@ -43,7 +43,7 @@
 			</div>
 		</div>
 
-		<div class="flex flex-row gap-4 mb-5">
+		<div class="flex flex-row gap-4">
 			{# Render barcode field and errors separately with custom styling #}
 			<div>
 				{{ form_label(productForm.barcode, "Code-barre: ") }}
@@ -58,6 +58,18 @@
 				{{ form_widget(productForm.amount) }}
 				{% if form_errors(productForm.amount) %}
 				<div class="text-red-500">{{ form_errors(productForm.amount) }}</div>
+				{% endif %}
+			</div>
+		</div>
+
+		<div class="mb-5">
+			{# Render name field and errors separately with custom styling #}
+			<div>
+				{{ form_label(productForm.price, "Prix unitaire (centimes): ") }}
+				{{ form_widget(productForm.price) }}
+				{# Render errors for name field in red text using form_errors function #}
+				{% if form_errors(productForm.price) %}
+				<div class="text-red-500">{{ form_errors(productForm.price) }}</div>
 				{% endif %}
 			</div>
 		</div>

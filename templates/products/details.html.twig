@@ -12,9 +12,12 @@
         <div>
             {{ form_row(productForm.name, {label: "Nom: "}) }}
         </div>
-        <div class="flex flex-row gap-4 mb-5">
+        <div class="flex flex-row gap-4">
             {{ form_row(productForm.barcode, {label: "Code-barre: "}) }}
             {{ form_row(productForm.amount, {label: "Quantité actuelle: "}) }}
+        </div>
+        <div class="mb-5">
+            {{ form_row(productForm.price, {label: "Prix unitaire (centimes): "}) }}
         </div>
         {% for message in app.flashes('error') %}
         <div class="text-red-600">

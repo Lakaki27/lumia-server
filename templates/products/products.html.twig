@@ -20,6 +20,7 @@
                 <th>Nom</th>
                 <th>Code-barre</th>
                 <th>Quantité actuelle</th>
+                <th>Prix unitaire (€)</th>
                 <th>Actions</th>
             </thead>
             <tbody class="list">
@@ -32,6 +33,7 @@
                     <td class="product-name border-solid border-1 border-gray-400">{{ product.name }}</td>
                     <td class="product-barcode border-solid border-1 border-gray-400">{{ product.barcode }}</td>
                     <td class="product-amount border-solid border-1 border-gray-400">{{ product.amount }}</td>
+                    <td class="product-price border-solid border-1 border-gray-400">{{ product.price / 100 }}</td>
                     <td class="inline-flex gap-1">{{ macros.clickableBtn("products", product.id) }}
                         {{ macros.deleteBtn("products/delete", product.id, "fa-solid fa-trash") }}
                     </td>

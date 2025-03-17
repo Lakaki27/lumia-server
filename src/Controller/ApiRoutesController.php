@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use App\Routes\ApiRoutes;
+use App\Service\BarcodeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,17 +24,20 @@ class ApiRoutesController extends AbstractController
     private $userRepo;
     private $productRepo;
     private $JWTManager;
+    private $barcodeService;
 
     public function __construct(
         UserPasswordHasherInterface $passwordEncoder,
         JWTTokenManagerInterface $JWTManager,
         UserRepository $userRepo,
-        ProductRepository $productRepo
+        ProductRepository $productRepo,
+        BarcodeService $barcodeService
     ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->userRepo = $userRepo;
         $this->productRepo = $productRepo;
         $this->JWTManager = $JWTManager;
+        $this->barcodeService = $barcodeService;
     }
 
     #[Route('/verify-token', name: 'api_verify_token', methods: ['POST'])]
@@ -47,9 +51,17 @@ class ApiRoutesController extends AbstractController
     public function declareSoldProducts(Request $request, EntityManagerInterface $entityManager)
     {
         $products = $request->get("products");
+        $logs = [];
+        $productsToUpdate = [];
 
         foreach ($products as $productData) {
-            $product = $this->productRepo->findOneBy(['barcode' => $productData['barcode']]);
+            $barcode = $this->barcodeService->extractProductDigits($productData["barcode"]);
+
+            if (!$barcode) {
+                return new JsonResponse(['message' => 'Code-barre invalide !'], JsonResponse::HTTP_NOT_FOUND);
+            }
+
+            $product = $this->productRepo->findOneBy(['barcode' => $barcode]);
 
             if ($product) {
                 $productLog = new ProductLog();
@@ -58,13 +70,25 @@ class ApiRoutesController extends AbstractController
 
                 $productLog->setProduct($product);
 
-                $productLog->setIsSold(1);
+                $productLog->setIsSold(0);
 
-                $entityManager->persist($productLog);
+                $logs[] = $productLog;
+
+                $product->setAmount($product->getAmount() - $productData["amount"]);
+
+                $productsToUpdate[] = $product;
             } else {
                 return new JsonResponse(['message' => 'Code-barre non répertorié !'], JsonResponse::HTTP_NOT_FOUND);
-                // break;
+                break;
             }
+        }
+
+        foreach ($logs as $log) {
+            $entityManager->persist($log);
+        }
+
+        foreach ($productsToUpdate as $p) {
+            $entityManager->persist($p);
         }
 
         $entityManager->flush();
@@ -77,9 +101,17 @@ class ApiRoutesController extends AbstractController
     public function declareAcquiredProducts(Request $request, EntityManagerInterface $entityManager)
     {
         $products = $request->get("products");
+        $logs = [];
+        $productsToUpdate = [];
 
         foreach ($products as $productData) {
-            $product = $this->productRepo->findOneBy(['barcode' => $productData['barcode']]);
+            $barcode = $this->barcodeService->extractProductDigits($productData["barcode"]);
+
+            if (!$barcode) {
+                return new JsonResponse(['message' => 'Code-barre invalide !'], JsonResponse::HTTP_NOT_FOUND);
+            }
+
+            $product = $this->productRepo->findOneBy(['barcode' => $barcode]);
 
             if ($product) {
                 $productLog = new ProductLog();
@@ -90,11 +122,23 @@ class ApiRoutesController extends AbstractController
 
                 $productLog->setIsSold(0);
 
-                $entityManager->persist($productLog);
+                $logs[] = $productLog;
+
+                $product->setAmount($product->getAmount() + $productData["amount"]);
+
+                $productsToUpdate[] = $product;
             } else {
                 return new JsonResponse(['message' => 'Code-barre non répertorié !'], JsonResponse::HTTP_NOT_FOUND);
-                // break;
+                break;
             }
+        }
+
+        foreach ($logs as $log) {
+            $entityManager->persist($log);
+        }
+
+        foreach ($productsToUpdate as $p) {
+            $entityManager->persist($p);
         }
 
         $entityManager->flush();
@@ -106,22 +150,20 @@ class ApiRoutesController extends AbstractController
     #[Route("/products/{barcode}", name: 'api_products_id', methods: ['GET'])]
     public function getProduct(Request $request, int $barcode)
     {
-        if (!is_int($barcode)) {
-            return $this->json(["error" => true, "message" => "Code-barre invalide !"], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+        $barcode = $this->barcodeService->extractProductDigits($barcode);
+
+        if (!$barcode) {
+            return new JsonResponse(['message' => 'Code-barre invalide !'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        if (strlen($barcode) === 13) {
-            $barcode = substr($barcode, 7, 5);
-        }
-
-        $product = $this->productRepo->findBy(["barcode" => $barcode]);
+        $product = $this->productRepo->findOneBy(["barcode" => $barcode]);
 
         if (!$product) {
             return new JsonResponse(['message' => 'Code-barre non répertorié !'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        dd($product);
+        $outputBarcode = $this->barcodeService->addCheckDigit($this->getParameter("app.barcodePrefix").$product->getBarcode());
 
-        return new JsonResponse(['product' => $product]);
+        return new JsonResponse(['name' => $product->getName(), "barcode" => $outputBarcode, "price" => $product->getPrice() / 100]);
     }
 }

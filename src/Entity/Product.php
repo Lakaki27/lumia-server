@@ -28,6 +28,9 @@ class Product
     #[ORM\Column(length: 10)]
     private ?int $amount = null;
 
+    #[ORM\Column(length: 10)]
+    private ?int $price = null;
+
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductLog::class)]
     private $productLogs;
 
@@ -74,6 +77,18 @@ class Product
     public function setAmount(int $amount): static
     {
         $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): static
+    {
+        $this->price = $price;
 
         return $this;
     }
