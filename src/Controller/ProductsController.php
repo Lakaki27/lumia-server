@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Form\ProductFormType;
+use App\Repository\ProductLogRepository;
 use App\Repository\ProductRepository;
 use App\Service\BarcodeService;
+use App\Service\ProductLogService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,11 +20,13 @@ final class ProductsController extends AbstractController
 {
     private ProductRepository $productRepository;
     private BarcodeService $barcodeService;
+    private ProductLogRepository $productLogRepository;
 
-    public function __construct(ProductRepository $productRepository, BarcodeService $barcodeService)
+    public function __construct(ProductRepository $productRepository, BarcodeService $barcodeService, ProductLogRepository $productLogRepository)
     {
         $this->productRepository = $productRepository;
         $this->barcodeService = $barcodeService;
+        $this->productLogRepository = $productLogRepository;
     }
 
     #[Route("", name: 'products_all')]
@@ -93,6 +98,24 @@ final class ProductsController extends AbstractController
         $em->flush();
 
         return $this->json(["success" => true, "message" => "Rôle supprimé !"]);
+    }
+
+    #[Route("/{id}/logs", name: 'product_last_sold_logs')]
+    public function productLogs(int $id, ProductLogService $productLogService)
+    {
+        if (!is_int($id)) {
+            return $this->redirectToRoute("products_all");
+        }
+
+        $product = $this->productRepository->findOneById($id);
+
+        if (!$product) {
+            return $this->redirectToRoute("products_all");
+        }
+
+        $logs = $productLogService->getProductLogs($id);
+
+        return new JsonResponse(['logs' => $logs], JsonResponse::HTTP_OK);
     }
 
     #[Route("/{id}", name: 'products_details')]

@@ -4,16 +4,18 @@
 {% block body %}
 
 <h1 class="text-3xl font-bold">Informations sur le produit: <span class="text-(--lumia-gold)">
-    {{ product.name }}
-</span></h1>
-<div class="w-250 flex flex-row gap-4 justify-between mb-20">
+        {{ product.name }}
+    </span>
+</h1>
+
+<div class="w-250 flex flex-row gap-[10vw] justify-between mb-20">
     <div class="flex">
         {{ form_start(productForm) }}
         <div>
             {{ form_row(productForm.name, {label: "Nom: "}) }}
         </div>
         <div class="flex flex-row gap-4">
-            {{ form_row(productForm.barcode, {label: "Code-barre: "}) }}
+            {{ form_row(productForm.barcode, {label: "Chiffres d'identification: "}) }}
             {{ form_row(productForm.amount, {label: "Quantité actuelle: "}) }}
         </div>
         <div class="mb-5">
@@ -24,23 +26,41 @@
             {{ message }}
         </div>
         {% endfor %}
-        <button class="cursor-pointer flex items-center gap-2 min-h-[36px] min-w-[36px] text-center justify-center transition border-(--lumia-purple) border-1 bg-(--lumia-purple) px-2 py-1 rounded text-white hover:bg-white hover:border-(--lumia-gold) hover:text-(--lumia-gold)"
-        type="submit">Mettre à jour</button>
+        <button
+            class="cursor-pointer flex items-center gap-2 min-h-[36px] min-w-[36px] text-center justify-center transition border-(--lumia-purple) border-1 bg-(--lumia-purple) px-2 py-1 rounded text-white hover:bg-white hover:border-(--lumia-gold) hover:text-(--lumia-gold)"
+            type="submit">Mettre à jour</button>
         {{ form_end(productForm) }}
     </div>
-    <div>
+    <div class="flex flex-col items-center justify-around">
         <svg id="barcode" jsbarcode-format="EAN13" jsbarcode-value="{{ barcode }}" jsbarcode-textmargin="0"
             jsbarcode-fontoptions="bold">
         </svg>
+        <h2 class="text-sm">
+            Les 5 chiffres d'identification correspondent aux cinq avant-derniers chiffres du code-barres, le dernier
+            chiffre étant réservé pour la validation du code-barre. </h2>
+
     </div>
 </div>
 
-<h2 class="text-2xl">Dernières ventes</h2>
-{# TODO: CHARTS #}
-{# Chart de la semaine, du mois et de l'année #}
-<div>
-    <canvas></canvas>
+<h2 class="text-3xl font-bold">Dernières ventes</h2>
+
+{# TODO: Ajouter les stocks calculés dynamiquement sur chaque chart genre avec un graph line #}
+
+<div class="w-full flex gap-[3vw] mt-6">
+    <div class="w-1/3 flex flex-col">
+        <h2 class="text-xl">Par semaine (2025)</h2>
+        <canvas id="weekChart"></canvas>
+    </div>
+    <div class="w-1/3 flex flex-col">
+        <h2 class="text-xl">Par mois (2025)</h2>
+        <canvas id="monthChart"></canvas>
+    </div>
+    <div class="w-1/3 flex flex-col">
+        <h2 class="text-xl">Par an</h2>
+        <canvas id="yearChart"></canvas>
+    </div>
 </div>
+
 
 {% endblock body %}
 

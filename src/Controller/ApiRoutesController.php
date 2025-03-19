@@ -9,6 +9,7 @@ use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use App\Routes\ApiRoutes;
 use App\Service\BarcodeService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,9 +51,15 @@ class ApiRoutesController extends AbstractController
     #[Route('/products/sell', name: 'api_products_sell', methods: ['POST'])]
     public function declareSoldProducts(Request $request, EntityManagerInterface $entityManager)
     {
-        $products = $request->get("products");
+        $data = json_decode($request->getContent(), true);
         $logs = [];
         $productsToUpdate = [];
+
+        if (!isset($data["products"])) {
+            return new JsonResponse(['message' => 'La requête est incorrectement formatée.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $products = $data["products"];
 
         foreach ($products as $productData) {
             $barcode = $this->barcodeService->extractProductDigits($productData["barcode"]);
@@ -70,7 +77,9 @@ class ApiRoutesController extends AbstractController
 
                 $productLog->setProduct($product);
 
-                $productLog->setIsSold(0);
+                $productLog->setCreatedAt(new \DateTimeImmutable());
+
+                $productLog->setIsSold(1);
 
                 $logs[] = $productLog;
 
@@ -100,9 +109,15 @@ class ApiRoutesController extends AbstractController
     #[Route('/products/acquire', name: 'api_products_acquire', methods: ['POST'])]
     public function declareAcquiredProducts(Request $request, EntityManagerInterface $entityManager)
     {
-        $products = $request->get("products");
+        $data = json_decode($request->getContent(), true);
         $logs = [];
         $productsToUpdate = [];
+
+        if (!isset($data["products"])) {
+            return new JsonResponse(['message' => 'La requête est incorrectement formatée.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $products = $data["products"];
 
         foreach ($products as $productData) {
             $barcode = $this->barcodeService->extractProductDigits($productData["barcode"]);
@@ -119,6 +134,8 @@ class ApiRoutesController extends AbstractController
                 $productLog->setAmount($productData['amount']);
 
                 $productLog->setProduct($product);
+
+                $productLog->setCreatedAt(new \DateTimeImmutable());
 
                 $productLog->setIsSold(0);
 
@@ -162,7 +179,7 @@ class ApiRoutesController extends AbstractController
             return new JsonResponse(['message' => 'Code-barre non répertorié !'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        $outputBarcode = $this->barcodeService->addCheckDigit($this->getParameter("app.barcodePrefix").$product->getBarcode());
+        $outputBarcode = $this->barcodeService->addCheckDigit($this->getParameter("app.barcodePrefix") . $product->getBarcode());
 
         return new JsonResponse(['name' => $product->getName(), "barcode" => $outputBarcode, "price" => $product->getPrice() / 100]);
     }
