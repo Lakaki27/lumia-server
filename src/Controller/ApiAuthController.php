@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route("api/v1/auth")]
@@ -43,11 +44,11 @@ class ApiAuthController extends AbstractController
     #[Route("/login", name: 'api_login', methods: ['POST'])]
     public function login(Request $request)
     {
-        $serial = $request->get("serial");
+        // $serial = $request->get("serial");
 
-        if (!$this->eClientsRepo->findOneBy(["serial" => $serial])) {
-            return new JsonResponse(['message' => 'Appareil non reconnu.'], JsonResponse::HTTP_UNAUTHORIZED);
-        }
+        // if (!$this->eClientsRepo->findOneBy(["serial" => $serial])) {
+        //     return new JsonResponse(['message' => 'Appareil non reconnu.'], JsonResponse::HTTP_UNAUTHORIZED);
+        // }
 
         $email = $request->get('email');
         $password = $request->get('password');
@@ -60,6 +61,6 @@ class ApiAuthController extends AbstractController
         // Generate the JWT token for the authenticated user
         $token = $this->JWTManager->create($user);
 
-        return new JsonResponse(['token' => $token]);
+        return new JsonResponse(['token' => $token], Response::HTTP_OK);
     }
 }

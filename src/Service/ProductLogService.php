@@ -2,9 +2,12 @@
 
 namespace App\Service;
 
+use App\Entity\Product;
 use App\Repository\ProductLogRepository;
 use DateTime;
+use PharIo\Manifest\Email;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeImmutableToDateTimeTransformer;
+use Symfony\Component\Mailer\MailerInterface;
 
 class ProductLogService
 {
@@ -30,22 +33,22 @@ class ProductLogService
             $date = $dateTrans->transform($log->getCreatedAt());
             $amount = $log->getAmount();
             $isSold = $log->isSold();
-        
+
             $soldOrAcquired = $isSold == 1 ? 'sold' : 'acquired';
-        
+
             $yearKey = $date->format('Y');
             if (!isset($yearData[$soldOrAcquired][$yearKey])) {
                 $yearData[$soldOrAcquired][$yearKey] = 0;
             }
             $yearData[$soldOrAcquired][$yearKey] += $amount;
-        
+
             if ($date->format('Y') == $currentYear) {
                 $weekKey = $date->format('W');
                 if (!isset($weekData[$soldOrAcquired][$weekKey])) {
                     $weekData[$soldOrAcquired][$weekKey] = 0;
                 }
                 $weekData[$soldOrAcquired][$weekKey] += $amount;
-        
+
                 $monthKey = $date->format('m');
                 if (!isset($monthData[$soldOrAcquired][$monthKey])) {
                     $monthData[$soldOrAcquired][$monthKey] = 0;
@@ -53,7 +56,7 @@ class ProductLogService
                 $monthData[$soldOrAcquired][$monthKey] += $amount;
             }
         }
-        
+
         ksort($weekData['sold']);
         ksort($weekData['acquired']);
         ksort($monthData['sold']);

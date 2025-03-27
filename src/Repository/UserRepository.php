@@ -64,4 +64,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * Get all users who have the 'ROLE_MANAGER'
+     * 
+     * @return User[]
+     */
+    public function findManagers(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->innerJoin('u.roles', 'r')
+            ->where('r.name = :role')
+            ->setParameter('role', 'ROLE_MANAGER')
+            ->getQuery()
+            ->getResult();
+    }
 }

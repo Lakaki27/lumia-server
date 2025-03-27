@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use App\Routes\ApiRoutes;
+use App\Service\AlertMailer;
 use App\Service\BarcodeService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,7 +50,7 @@ class ApiRoutesController extends AbstractController
 
     //TODO: tester ça
     #[Route('/products/sell', name: 'api_products_sell', methods: ['POST'])]
-    public function declareSoldProducts(Request $request, EntityManagerInterface $entityManager)
+    public function declareSoldProducts(Request $request, EntityManagerInterface $entityManager, AlertMailer $alertMailer)
     {
         $data = json_decode($request->getContent(), true);
         $logs = [];
@@ -97,6 +98,10 @@ class ApiRoutesController extends AbstractController
         }
 
         foreach ($productsToUpdate as $p) {
+            if ($p->getAmount() <= 10) {
+                $alertMailer->alertProductStockIsTooLow($p);
+            }
+
             $entityManager->persist($p);
         }
 
