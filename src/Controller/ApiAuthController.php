@@ -44,11 +44,17 @@ class ApiAuthController extends AbstractController
     #[Route("/login", name: 'api_login', methods: ['POST'])]
     public function login(Request $request)
     {
-        // $serial = $request->get("serial");
+        $serial = $request->headers->get('Client-Serial');
 
-        // if (!$this->eClientsRepo->findOneBy(["serial" => $serial])) {
-        //     return new JsonResponse(['message' => 'Appareil non reconnu.'], JsonResponse::HTTP_UNAUTHORIZED);
-        // }
+        if (!$serial) {
+            return new JsonResponse(['message' => 'Appareil non autorisé !'], JsonResponse::HTTP_UNAUTHORIZED);
+        }
+
+        $serialExists = $this->eClientsRepo->findOneBy(["serial" => $serial]);
+
+        if (!$serialExists) {
+            return new JsonResponse(['message' => 'Appareil non autorisé !'], JsonResponse::HTTP_UNAUTHORIZED);
+        }
 
         $email = $request->get('email');
         $password = $request->get('password');

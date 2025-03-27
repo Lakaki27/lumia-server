@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Entity\ProductLog;
 use App\Entity\User;
+use App\Repository\EmbeddedClientRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use App\Routes\ApiRoutes;
@@ -27,24 +28,39 @@ class ApiRoutesController extends AbstractController
     private $productRepo;
     private $JWTManager;
     private $barcodeService;
+    private $embeddedClientRepository;
 
     public function __construct(
         UserPasswordHasherInterface $passwordEncoder,
         JWTTokenManagerInterface $JWTManager,
         UserRepository $userRepo,
         ProductRepository $productRepo,
-        BarcodeService $barcodeService
+        BarcodeService $barcodeService,
+        EmbeddedClientRepository $embeddedClientRepository
     ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->userRepo = $userRepo;
         $this->productRepo = $productRepo;
         $this->JWTManager = $JWTManager;
         $this->barcodeService = $barcodeService;
+        $this->embeddedClientRepository = $embeddedClientRepository;
     }
 
     #[Route('/verify-token', name: 'api_verify_token', methods: ['POST'])]
     public function verifyTokenValidity(Request $request)
     {
+        $serial = $request->headers->get('Client-Serial');
+
+        if (!$serial) {
+            return new JsonResponse(['isValid' => false], JsonResponse::HTTP_UNAUTHORIZED);
+        }
+
+        $serialExists = $this->embeddedClientRepository->findOneBy(["serial" => $serial]);
+
+        if (!$serialExists) {
+            return new JsonResponse(['isValid' => false], JsonResponse::HTTP_UNAUTHORIZED);
+        }
+
         return new JsonResponse(['isValid' => true], JsonResponse::HTTP_OK);
     }
 
@@ -52,6 +68,18 @@ class ApiRoutesController extends AbstractController
     #[Route('/products/sell', name: 'api_products_sell', methods: ['POST'])]
     public function declareSoldProducts(Request $request, EntityManagerInterface $entityManager, AlertMailer $alertMailer)
     {
+        $serial = $request->headers->get('Client-Serial');
+
+        if (!$serial) {
+            return new JsonResponse(['message' => 'Erreur de connexion au serveur: appareil non autorisé !'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $serialExists = $this->embeddedClientRepository->findOneBy(["serial" => $serial]);
+
+        if (!$serialExists) {
+            return new JsonResponse(['message' => 'Erreur de connexion au serveur: appareil non autorisé !'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
         $data = json_decode($request->getContent(), true);
         $logs = [];
         $productsToUpdate = [];
@@ -114,6 +142,18 @@ class ApiRoutesController extends AbstractController
     #[Route('/products/acquire', name: 'api_products_acquire', methods: ['POST'])]
     public function declareAcquiredProducts(Request $request, EntityManagerInterface $entityManager)
     {
+        $serial = $request->headers->get('Client-Serial');
+
+        if (!$serial) {
+            return new JsonResponse(['message' => 'Erreur de connexion au serveur: appareil non autorisé !'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $serialExists = $this->embeddedClientRepository->findOneBy(["serial" => $serial]);
+
+        if (!$serialExists) {
+            return new JsonResponse(['message' => 'Erreur de connexion au serveur: appareil non autorisé !'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
         $data = json_decode($request->getContent(), true);
         $logs = [];
         $productsToUpdate = [];
@@ -172,6 +212,18 @@ class ApiRoutesController extends AbstractController
     #[Route("/products/{barcode}", name: 'api_products_id', methods: ['GET'])]
     public function getProduct(Request $request, int $barcode)
     {
+        $serial = $request->headers->get('Client-Serial');
+
+        if (!$serial) {
+            return new JsonResponse(['message' => 'Erreur de connexion au serveur: appareil non autorisé !'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $serialExists = $this->embeddedClientRepository->findOneBy(["serial" => $serial]);
+
+        if (!$serialExists) {
+            return new JsonResponse(['message' => 'Erreur de connexion au serveur: appareil non autorisé !'], JsonResponse::HTTP_NOT_FOUND);
+        }
+        
         $barcode = $this->barcodeService->extractProductDigits($barcode);
 
         if (!$barcode) {
