@@ -29,14 +29,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         if (response.ok) {
                             Toast.fire({
                                 icon: "success",
-                                text: response.message
+                                text: "Article supprimé. Veuillez recharger la page pour voir les modifications." 
                             })
 
                             //todo: delete row
                         } else {
                             Toast.fire({
                                 icon: "error",
-                                text: response.message
+                                text: "Erreur dans la suppression de l'article." 
                             })
                         }
                     })

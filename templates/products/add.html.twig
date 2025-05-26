@@ -46,7 +46,7 @@
 		<div class="flex flex-row gap-4">
 			{# Render barcode field and errors separately with custom styling #}
 			<div>
-				{{ form_label(productForm.barcode, "Code-barre: ") }}
+				{{ form_label(productForm.barcode, "Chiffres d'identification: ") }}
 				{{ form_widget(productForm.barcode) }}
 				{% if form_errors(productForm.barcode) %}
 				<div class="text-red-500">{{ form_errors(productForm.barcode) }}</div>
@@ -79,6 +79,11 @@
 			type="submit">Ajouter</button>
 
 		{{ form_end(productForm) }}
+	</div>
+	<div class="flex flex-col items-center justify-around">
+		<h2 class="text-sm">
+			Les 5 chiffres d'identification correspondent aux cinq avant-derniers chiffres du code-barres, le dernier
+			chiffre étant réservé pour la validation du code-barre. </h2>
 	</div>
 </div>
 

@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         if (response.ok) {
                             Toast.fire({
                                 icon: "success",
-                                text: response.message
+                                text: "Utilisateur supprimé. Veuillez recharger la page pour voir les modifications." 
                             })
 
                             //todo: delete row
